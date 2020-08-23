@@ -11,7 +11,7 @@ import numpy as np
 
 config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
 
-num_classes = 13
+num_classes = 21
 batch_size = 8
 
 model = ssd_300(image_size=config.input_shape,
@@ -77,5 +77,11 @@ history = model.fit(dataset,
                               # validation_data=val_generator,
                               # validation_steps=ceil(val_dataset_size/batch_size),
                               initial_epoch=initial_epoch)
+output = './checkpoints/final_ssd.h5'
+direc = '/'
+direc = direc.join(output.split('/')[:-1])
+if not os.path.isdir(direc):
+  print(direc)
+  os.mkdir(direc)
 
-model.save('./checkpoints/final_ssd.h5')
+model.save(output)

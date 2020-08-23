@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
     config = SSD300Config()
 
-    parser = Tfrpaser(config=config, predictor_sizes=[(512,512)]*6,num_classes=13,batch_size=2)
+    parser = Tfrpaser(config=config, predictor_sizes=[(300,300)]*6,num_classes=21,batch_size=1)
     
     dataset = parser.parse_tfrecords(filename=os.path.join(os.getcwd(),'DATA','train*.tfrecord'))
 
@@ -234,6 +234,6 @@ if __name__ == '__main__':
         # print(abxs_batch)
 
         for index in range(parser.batch_size):
-            im = draw_boxes_on_image_v2(image_batch[index]*255, abxs_batch[index])
-            cv2.imwrite(f"{index}.jpg", im)
+           im = draw_boxes_on_image_v2(image_batch[index]*255, abxs_batch[index])
+           cv2.imwrite(f"{index}.jpg", im)
         
