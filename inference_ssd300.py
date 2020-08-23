@@ -13,6 +13,8 @@ from helpers import annotate_image as image_annotator
 
 import numpy as np
 import pdb
+import glob
+import os
 
 
 config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
@@ -58,36 +60,48 @@ def load_ssd300(config, checkpoint_file, num_classes):
 model = load_ssd300(config, './checkpoints/final_ssd.h5', num_classes)
 
 orig_images = [] # Store the images here.
-input_images = [] # Store resized versions of the images here.
+input_images = []
+pil_input_images = [] # Store resized versions of the images here.
 
 # We'll only load one image in this example.
-img_path = 'train/4d6b667ecbd41ebd603b38848366d9d029238774d80d0be8def25571c503714f.jpg'
+img_dir = './example_images'
+write_out_dir = './results'
+
+os.makedirs(write_out_dir, exist_ok=True)
 
 # orig_images.append(imread(img_path))
-pil_image = image.load_img(img_path, target_size=(config.height, config.width))
-img = np.array(pil_image)/255 
-input_images.append(img)
-input_images = np.array(input_images)
+
+for image_path in glob.glob(os.path.join(img_dir,'*.jpg')):
+    pil_image = image.load_img(image_path, target_size=(config.height, config.width))
+    pil_input_images.append(pil_image)
+    img = np.array(pil_image)
+    input_images.append(img)
+
+input_images = np.array(input_images)/255 
 
 y_pred = model.predict(input_images)
 
 
-bboxes = y_pred[:,:,2:]
-confidences = y_pred[:,:,1]
-labels = y_pred[:,:,0].astype(int)
-
 confidence_threshold = 0.75
 
 
-annotated_image = image_annotator(
-    image=pil_image, 
-    bboxes=bboxes[0], 
-    scores=confidences[0], 
-    labels=labels[0], 
-    threshold=0.75, label_dict=None)
+for index in range(y_pred.shape[0]):
+
+    bbox = y_pred[index,:,2:]
+    confidence = y_pred[index,:,1]
+    label = y_pred[index,:,0].astype(int)
+
+    print(bbox.shape)
+
+    annotated_image = image_annotator(
+        image=pil_input_images[index], 
+        bboxes=bbox, 
+        scores=confidence, 
+        labels=label, 
+        threshold=0.75)
 
 
-annotated_image.save('predicted.jpg')
+    annotated_image.save(os.path.join(write_out_dir,f"{index}_predicted.jpg"))
 # pdb.set_trace()
 
 

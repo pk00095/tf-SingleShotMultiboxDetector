@@ -67,7 +67,7 @@ model.compile(optimizer=Adam(lr=0.001, clipnorm=0.001), loss=ssd_loss.compute_lo
 
 
 initial_epoch   = 0
-final_epoch     = 10
+final_epoch     = 5
 steps_per_epoch = 1000
 
 history = model.fit(dataset,
