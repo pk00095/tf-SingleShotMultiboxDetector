@@ -14,18 +14,20 @@ config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
 num_classes = 13
 batch_size = 8
 
-model = ssd_300(image_size=config.input_shape,
-                n_classes=num_classes,
-                mode='training',
-                l2_regularization=0.0005,
-                scales=config.scales,
-                aspect_ratios_per_layer=config.aspect_ratios,
-                two_boxes_for_ar1=config.two_boxes_for_ar1,
-                steps=config.strides,
-                offsets=config.offsets,
-                clip_boxes=config.clip_boxes,
-                variances=config.variances,
-                normalize_coords=config.normalize_coords)
+model = ssd_300(
+	weights='imagenet',
+	image_size=config.input_shape,
+    n_classes=num_classes,
+    mode='training',
+    l2_regularization=0.0005,
+    scales=config.scales,
+    aspect_ratios_per_layer=config.aspect_ratios,
+    two_boxes_for_ar1=config.two_boxes_for_ar1,
+    steps=config.strides,
+    offsets=config.offsets,
+    clip_boxes=config.clip_boxes,
+    variances=config.variances,
+    normalize_coords=config.normalize_coords)
 
 predictor_sizes = [model.get_layer('conv4_3_norm_mbox_conf').output_shape[1:3],
                    model.get_layer('fc7_mbox_conf').output_shape[1:3],

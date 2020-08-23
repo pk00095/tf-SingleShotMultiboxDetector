@@ -23,22 +23,24 @@ num_classes = 13
 
 def load_ssd300(config, checkpoint_file, num_classes):
 
-    model = ssd_300(image_size=config.input_shape,
-                    n_classes=num_classes,
-                    mode='inference',
-                    l2_regularization=0.0005,
-                    scales=config.scales,
-                    aspect_ratios_per_layer=config.aspect_ratios,
-                    two_boxes_for_ar1=config.two_boxes_for_ar1,
-                    steps=config.strides,
-                    offsets=config.offsets,
-                    clip_boxes=config.clip_boxes,
-                    variances=config.variances,
-                    normalize_coords=config.normalize_coords,
-                    confidence_thresh=0.5,
-                    iou_threshold=0.45,
-                    top_k=200,
-                    nms_max_output_size=400)
+    model = ssd_300(
+        weights=None,
+        image_size=config.input_shape,
+        n_classes=num_classes,
+        mode='inference',
+        l2_regularization=0.0005,
+        scales=config.scales,
+        aspect_ratios_per_layer=config.aspect_ratios,
+        two_boxes_for_ar1=config.two_boxes_for_ar1,
+        steps=config.strides,
+        offsets=config.offsets,
+        clip_boxes=config.clip_boxes,
+        variances=config.variances,
+        normalize_coords=config.normalize_coords,
+        confidence_thresh=0.5,
+        iou_threshold=0.45,
+        top_k=200,
+        nms_max_output_size=400)
 
     # 2: Load the trained weights into the model.
 
