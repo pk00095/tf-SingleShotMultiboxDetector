@@ -151,6 +151,8 @@ class SSD300Config(object):
         self.clip_boxes = False
         self.normalize_coords = True
 
+        self.coords='centroids'
+
 
 
 def download_aerial_dataset(dataset_path=tempfile.gettempdir()):

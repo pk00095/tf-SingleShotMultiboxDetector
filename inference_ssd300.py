@@ -16,50 +16,66 @@ import pdb
 import glob
 import os
 
+from tensorflow.keras.applications.vgg16 import preprocess_input
+from models.keras_layer_DecodeDetections import DecodeDetections
+
 
 config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
 
-num_classes = 13
 
-def load_ssd300(config, checkpoint_file, num_classes):
+training_model = keras.models.load_model('./checkpoints/final_ssd', compile=False)
 
-    model, preprocess_input = ssd_300(
-        weights=None,
-        image_size=config.input_shape,
-        n_classes=num_classes,
-        mode='inference',
-        l2_regularization=0.0005,
-        scales=config.scales,
-        aspect_ratios_per_layer=config.aspect_ratios,
-        two_boxes_for_ar1=config.two_boxes_for_ar1,
-        steps=config.strides,
-        offsets=config.offsets,
-        clip_boxes=config.clip_boxes,
-        variances=config.variances,
-        normalize_coords=config.normalize_coords,
-        confidence_thresh=0.5,
-        iou_threshold=0.45,
-        top_k=200,
-        nms_max_output_size=400)
+decoded_predictions = DecodeDetections(confidence_thresh=0.5,
+                                       iou_threshold=0.45,
+                                       top_k=200,
+                                       nms_max_output_size=400,
+                                       coords=config.coords,
+                                       normalize_coords=config.normalize_coords,
+                                       img_height=config.height,
+                                       img_width=config.width,
+                                       name='decoded_predictions')(training_model.output)
 
-    # 2: Load the trained weights into the model.
+model = keras.models.Model(inputs=training_model.input, outputs=decoded_predictions)
 
-    model.load_weights(checkpoint_file, by_name=True)
+# def load_ssd300(config, checkpoint_file, num_classes):
 
-    return model, preprocess_input
+#     model, preprocess_input = ssd_300(
+#         weights=None,
+#         image_size=config.input_shape,
+#         n_classes=num_classes,
+#         mode='inference',
+#         l2_regularization=0.0005,
+#         scales=config.scales,
+#         aspect_ratios_per_layer=config.aspect_ratios,
+#         two_boxes_for_ar1=config.two_boxes_for_ar1,
+#         steps=config.strides,
+#         offsets=config.offsets,
+#         clip_boxes=config.clip_boxes,
+#         variances=config.variances,
+#         normalize_coords=config.normalize_coords,
+#         confidence_thresh=0.5,
+#         iou_threshold=0.45,
+#         top_k=200,
+#         nms_max_output_size=400)
 
-    # ssd_loss = SSDLoss(neg_pos_ratio=3, n_neg_min=0, alpha=1.0)
+#     # 2: Load the trained weights into the model.
 
-    # model = keras.models.load_model(
-    #     './checkpoints/final_ssd.h5', 
-    #     custom_objects={'AnchorBoxes': AnchorBoxes,
-    #                    # 'L2Normalization': L2Normalization,
-    #                    'DecodeDetections': DecodeDetections,
-    #                    'compute_loss': ssd_loss.compute_loss}
-    #                    )
+#     model.load_weights(checkpoint_file, by_name=True)
+
+#     return model, preprocess_input
+
+#     # ssd_loss = SSDLoss(neg_pos_ratio=3, n_neg_min=0, alpha=1.0)
+
+#     # model = keras.models.load_model(
+#     #     './checkpoints/final_ssd.h5', 
+#     #     custom_objects={'AnchorBoxes': AnchorBoxes,
+#     #                    # 'L2Normalization': L2Normalization,
+#     #                    'DecodeDetections': DecodeDetections,
+#     #                    'compute_loss': ssd_loss.compute_loss}
+#     #                    )
 
 
-model, preprocess_input = load_ssd300(config, './checkpoints/final_ssd.h5', num_classes)
+# model, preprocess_input = load_ssd300(config, './checkpoints/final_ssd.h5', num_classes)
 
 orig_images = [] # Store the images here.
 input_images = []

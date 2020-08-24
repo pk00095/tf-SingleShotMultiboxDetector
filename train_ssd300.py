@@ -16,7 +16,8 @@ initial_epoch   = 0
 final_epoch     = 5
 steps_per_epoch = 1000
 
-checkpoint_path = './checkpoints/final_ssd.h5'
+# checkpoint_path = './checkpoints/final_ssd.h5'
+checkpoint_path = './checkpoints/final_ssd'
 os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
 
 
