@@ -23,7 +23,7 @@ num_classes = 13
 
 def load_ssd300(config, checkpoint_file, num_classes):
 
-    model = ssd_300(
+    model, preprocess_input = ssd_300(
         weights=None,
         image_size=config.input_shape,
         n_classes=num_classes,
@@ -46,7 +46,7 @@ def load_ssd300(config, checkpoint_file, num_classes):
 
     model.load_weights(checkpoint_file, by_name=True)
 
-    return model
+    return model, preprocess_input
 
     # ssd_loss = SSDLoss(neg_pos_ratio=3, n_neg_min=0, alpha=1.0)
 
@@ -59,7 +59,7 @@ def load_ssd300(config, checkpoint_file, num_classes):
     #                    )
 
 
-model = load_ssd300(config, './checkpoints/final_ssd.h5', num_classes)
+model, preprocess_input = load_ssd300(config, './checkpoints/final_ssd.h5', num_classes)
 
 orig_images = [] # Store the images here.
 input_images = []
@@ -79,7 +79,7 @@ for image_path in glob.glob(os.path.join(img_dir,'*.jpg')):
     img = np.array(pil_image)
     input_images.append(img)
 
-input_images = np.array(input_images)/255 
+input_images = preprocess_input(np.array(input_images))
 
 y_pred = model.predict(input_images)
 
