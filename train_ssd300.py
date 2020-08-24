@@ -67,8 +67,8 @@ model.compile(optimizer=Adam(lr=0.001, clipnorm=0.001), loss=ssd_loss.compute_lo
 
 
 initial_epoch   = 0
-final_epoch     = 5
-steps_per_epoch = 1000
+final_epoch     = 1
+steps_per_epoch = 1
 
 history = model.fit(dataset,
                               steps_per_epoch=steps_per_epoch,
@@ -82,6 +82,6 @@ direc = '/'
 direc = direc.join(output.split('/')[:-1])
 if not os.path.isdir(direc):
   print(direc)
-  os.mkdir(direc)
+  os.makedirs(direc,exist_ok=True)
 
 model.save(output)
