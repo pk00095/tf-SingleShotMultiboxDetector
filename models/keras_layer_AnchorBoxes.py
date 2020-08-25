@@ -171,13 +171,10 @@ class AnchorBoxes(Layer):
         # We need the shape of the input tensor
         # if K.image_dim_ordering() == 'tf':
         try:
-            batch_size, feature_map_height, feature_map_width, feature_map_channels = tf.convert_to_tensor(x).get_shape()
-            # print(type(x))
-        except:
-            batch_size, feature_map_height, feature_map_width, feature_map_channels = tf.convert_to_tensor(x)[0].get_shape()
-            # print(type(x))
-            # print(x[0])
-            # exit()
+            batch_size, feature_map_height, feature_map_width, feature_map_channels = x.get_shape()
+        except Exception as e:
+            assert len(x) == 1
+            batch_size, feature_map_height, feature_map_width, feature_map_channels = x[0].get_shape()
         # else: # Not yet relevant since TensorFlow is the only supported backend right now, but it can't harm to have this in here for the future
             # batch_size, feature_map_channels, feature_map_height, feature_map_width = x._keras_shape
 

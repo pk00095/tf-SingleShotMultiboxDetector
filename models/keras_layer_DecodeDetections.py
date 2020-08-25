@@ -20,6 +20,7 @@ limitations under the License.
 from __future__ import division
 import numpy as np
 import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import InputSpec
 from tensorflow.keras.layers import Layer
@@ -281,3 +282,22 @@ class DecodeDetections(Layer):
         }
         base_config = super(DecodeDetections, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
+
+
+
+def decode_detections(training_model, config, **kwargs):
+        decoded_predictions = DecodeDetections(
+                # confidence_thresh=0.5,
+                # iou_threshold=0.45,
+                # top_k=200,
+                # nms_max_output_size=400,
+                coords=config.coords,
+                normalize_coords=config.normalize_coords,
+                img_height=config.height,
+                img_width=config.width,
+                name='SSD300',
+                **kwargs)(training_model.output)
+
+        model = keras.models.Model(inputs=training_model.input, outputs=[decoded_predictions[:,:,2:], decoded_predictions[:,:,1], tf.cast(decoded_predictions[:,:,0], tf.int32)])
+
+        return model
