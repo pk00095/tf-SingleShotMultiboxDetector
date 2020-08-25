@@ -57,7 +57,7 @@ def print_tensor(x):
 
 class Tfrpaser(object):
     """docstring for Tfrpaser"""
-    def __init__(self, num_classes, config, predictor_sizes, batch_size):
+    def __init__(self, num_classes, config, predictor_sizes, batch_size, preprocess_input):
 
         self.num_classes = num_classes
         self.batch_size = batch_size
@@ -85,52 +85,8 @@ class Tfrpaser(object):
                                     neg_iou_limit=config.neg_iou_limit,
                                     normalize_coords=config.normalize_coords)
 
-    # def make_gt(self, bboxes, height_scale, width_scale):
-    #     """Summary
-    #     Create a bbox batch of the form [xmin,ymin, xmax,ymax,labels]
-    #     """
+        self.preprocess_input = preprocess_input
 
-    #     # delete bboxes containing [-1,-1,-1,-1, -1] added in **[1]
-    #     bboxes = bboxes[~np.all(bboxes==-1, axis=1)]
-
-    #     bboxes[:,[1,2]] *= width_scale
-    #     bboxes[:,[3,4]] *= height_scale
-
-    #     num_boxes, boxes_per_row = bboxes.shape
-
-    #     assert boxes_per_row == 5
-
-    #     arr = np.zeros((self.max_box_per_image,5), keras.backend.floatx())
-    #     arr[:,0] -= 1
-
-    #     max_index = min(num_boxes, self.max_box_per_image)
-
-    #     arr[:max_index] = bboxes[:max_index]
-
-    #     return arr #.astype(keras.backend.floatx())
-
-    # @tf.function
-    # def tf_make_gt(self, xmin_batch, ymin_batch, xmax_batch, ymax_batch, label_batch, height_scale, width_scale):
-        
-    #     annotation_batch = list()
-
-    #     for index in range(self.batch_size):
-
-    #         xmins, ymins, xmaxs, ymaxs, labels = xmin_batch[index], ymin_batch[index], xmax_batch[index], ymax_batch[index], label_batch[index]
-
-    #         # labels = tf.cast(labels, keras.backend.floatx())
-    #         # print(labels.shape)
-
-    #         # bboxes = tf.convert_to_tensor([labels, xmins,ymins,xmaxs,ymaxs], dtype=keras.backend.floatx())
-    #         # bboxes = tf.transpose(bboxes)
-
-    #         # bboxes = tf.numpy_function(self.make_gt, [bboxes, height_scale, width_scale], Tout=keras.backend.floatx())
-
-    #         # annotation_batch.append(bboxes)
-
-    #         _ = tf.numpy_function(print_tensor, [xmins], Tout=keras.backend.floatx())
-
-    #     return xmin_batch        
 
     def _parse_fn(self, serialized):
         """Summary
@@ -182,16 +138,8 @@ class Tfrpaser(object):
 
         y_true = tf.numpy_function(self.ssd_encoder_layer.generate_ytrue, [annotation_batch],  Tout= keras.backend.floatx())
 
-        # _ = self.tf_make_gt(
-        #     xmin_batch, 
-        #     xmax_batch, 
-        #     ymin_batch, 
-        #     ymax_batch, 
-        #     label_batch, 
-        #     height_scale, 
-        #     width_scale)
 
-        return image_batch/255, y_true
+        return self.preprocess_input(image_batch), y_true
 
 
     def parse_tfrecords(self, filename):
@@ -221,7 +169,7 @@ if __name__ == '__main__':
 
     config = SSD300Config()
 
-    parser = Tfrpaser(config=config, predictor_sizes=[(300,300)]*6,num_classes=21,batch_size=1)
+    parser = Tfrpaser(config=config, predictor_sizes=[(300,300)]*6,num_classes=13,batch_size=2) #<--predictor_sizes is dummy
     
     dataset = parser.parse_tfrecords(filename=os.path.join(os.getcwd(),'DATA','train*.tfrecord'))
 

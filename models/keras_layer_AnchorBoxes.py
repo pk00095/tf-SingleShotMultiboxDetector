@@ -18,6 +18,7 @@ limitations under the License.
 
 from __future__ import division
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import InputSpec
 from tensorflow.keras.layers import Layer
@@ -169,7 +170,14 @@ class AnchorBoxes(Layer):
 
         # We need the shape of the input tensor
         # if K.image_dim_ordering() == 'tf':
-        batch_size, feature_map_height, feature_map_width, feature_map_channels = x.get_shape()
+        try:
+            batch_size, feature_map_height, feature_map_width, feature_map_channels = tf.convert_to_tensor(x).get_shape()
+            # print(type(x))
+        except:
+            batch_size, feature_map_height, feature_map_width, feature_map_channels = tf.convert_to_tensor(x)[0].get_shape()
+            # print(type(x))
+            # print(x[0])
+            # exit()
         # else: # Not yet relevant since TensorFlow is the only supported backend right now, but it can't harm to have this in here for the future
             # batch_size, feature_map_channels, feature_map_height, feature_map_width = x._keras_shape
 
