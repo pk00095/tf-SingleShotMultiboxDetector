@@ -6,8 +6,14 @@ from keras_ssd_loss import SSDLoss
 from helpers import draw_boxes_on_image_v2, SSD300Config
 from tfrecord_parser import Tfrpaser
 
+from segmind_track import KerasCallback
+from segmind_track import set_experiment
+
 import os, pdb
 import numpy as np
+
+
+set_experiment("f5082153-3ed2-40b6-a4c6-f4cd96b6cedc")
 
 num_classes = 13
 batch_size = 8
@@ -62,7 +68,7 @@ history = model.fit(
     dataset,
     steps_per_epoch=steps_per_epoch,
     epochs=final_epoch,
-    # callbacks=callbacks,
+    callbacks=[KerasCallback()],
     # validation_data=val_generator,
     # validation_steps=ceil(val_dataset_size/batch_size),
     initial_epoch=initial_epoch)
