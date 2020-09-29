@@ -5,7 +5,7 @@ import math, sys
 from pprint import pprint
 import xml.etree.ElementTree as ET
 
-from helpers import download_chess_dataset
+from tf_ssd.helpers import download_chess_dataset
 
 def int64_feature(value):
   return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))

@@ -21,8 +21,8 @@ from __future__ import division
 from tensorflow import keras
 import numpy as np
 
-from utils.bounding_box_utils import iou, convert_coordinates
-from utils.matching_utils import match_bipartite_greedy, match_multi
+from tf_ssd.utils.bounding_box_utils import iou, convert_coordinates
+from tf_ssd.utils.matching_utils import match_bipartite_greedy, match_multi
 
 # def filter_annotations(bboxes):
 #         """ Filter annotations by removing those that are outside of the image bounds or whose width/height < 0.

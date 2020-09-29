@@ -1,0 +1,12 @@
+Metadata-Version: 1.2
+Name: tf-ssd
+Version: 0.0.2.dev0
+Summary: Tensorflow implementation of SSD object detection using keras api.
+Home-page: https://github.com/pk00095/tf-SingleShotMultiboxDetector
+Author: T Pratik
+Author-email: pk00095@gmail.com
+Maintainer: T Pratik
+Maintainer-email: pk00095@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN

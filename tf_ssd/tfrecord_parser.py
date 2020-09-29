@@ -3,8 +3,8 @@ from tensorflow import keras
 import cv2, os, glob
 import numpy as np
 
-from helpers import SSD300Config
-from ssd_input_encoder import SSDInputEncoder
+from tf_ssd.helpers import SSD300Config
+from tf_ssd.ssd_input_encoder import SSDInputEncoder
 
 config = SSD300Config()
 

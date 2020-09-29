@@ -173,7 +173,7 @@ def download_aerial_dataset(dataset_path=tempfile.gettempdir()):
     return images_dir, annotation_dir
 
 
-def download_chess_dataset(dataset_path=tempfile.gettempdir()):
+def download_chess_dataset(dataset_path=os.getcwd()):
     zip_url = 'https://public.roboflow.ai/ds/uBYkFHtqpy?key=HZljsh2sXY'
     path_to_zip_file = tf.keras.utils.get_file(
         'chess_pieces.zip',

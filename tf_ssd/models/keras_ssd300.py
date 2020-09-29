@@ -25,10 +25,10 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
 
-from models.keras_layer_AnchorBoxes import AnchorBoxes
+from tf_ssd.models.keras_layer_AnchorBoxes import AnchorBoxes
 # from models.keras_layer_L2Normalization import L2Normalization
-from models.keras_layer_DecodeDetections import DecodeDetections
-from models.keras_layer_DecodeDetectionsFast import DecodeDetectionsFast
+from tf_ssd.models.keras_layer_DecodeDetections import DecodeDetections
+from tf_ssd.models.keras_layer_DecodeDetectionsFast import DecodeDetectionsFast
 
 def ssd_300(
     weights,
