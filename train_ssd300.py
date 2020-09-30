@@ -67,7 +67,8 @@ model.compile(optimizer=Adam(lr=0.001, clipnorm=0.001), loss=ssd_loss.compute_lo
 checkpoint_callabck = CheckpointCallback(
     snapshot_interval=2, 
     snapshot_path=checkpoint_path, 
-    checkpoint_prefix=checkpoint_prefix)
+    checkpoint_prefix=checkpoint_prefix,
+    save_h5=False)
 
 metrics_callback = KerasCallback()
 
@@ -80,4 +81,4 @@ history = model.fit(
     # validation_steps=ceil(val_dataset_size/batch_size),
     initial_epoch=initial_epoch)
 
-model.save(checkpoint_path)
+# model.save(checkpoint_path)

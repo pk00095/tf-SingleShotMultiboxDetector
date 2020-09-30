@@ -13,10 +13,12 @@ import numpy as np
 import glob
 import os
 
+from segmind_track import set_experiment
+from segmind_track import log_bbox_prediction
 
+set_experiment("f5082153-3ed2-40b6-a4c6-f4cd96b6cedc")
 
 config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
-
 
 training_model = keras.models.load_model('./checkpoints/final_ssd', compile=False)
 
@@ -61,7 +63,7 @@ for index in range(input_images.shape[0]):
     confidence = scores[index]
     label = labels[index]
 
-    print(bbox.shape)
+    # print(bbox.shape)
     # confidence
 
     annotated_image = image_annotator(
@@ -70,6 +72,14 @@ for index in range(input_images.shape[0]):
         scores=confidence, 
         labels=label, 
         threshold=0.75)
+
+    log_bbox_prediction(
+        key=f"{index}_predicted.jpg", 
+        image=pil_input_images[index], 
+        bbox_pred=bbox, 
+        bbox_gt=None, 
+        bbox_type='pascal_voc', 
+        step=None)
 
 
     annotated_image.save(os.path.join(write_out_dir,f"{index}_predicted.jpg"))
