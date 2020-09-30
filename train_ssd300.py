@@ -8,6 +8,8 @@ from tfrecord_parser import Tfrpaser
 
 from segmind_track import KerasCallback
 from segmind_track import set_experiment
+from segmind_track import CheckpointCallback
+from segmind_track import log_params
 
 import os, pdb
 import numpy as np
@@ -19,15 +21,16 @@ num_classes = 13
 batch_size = 8
 
 initial_epoch   = 0
-final_epoch     = 5
+final_epoch     = 6
 steps_per_epoch = 1000
 
 # checkpoint_path = './checkpoints/final_ssd.h5'
 checkpoint_path = './checkpoints/final_ssd'
-os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
+checkpoint_prefix = 'ssd300_test'
 
 
 config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
+log_params(vars(config))
 
 model, preprocess_input, predictor_sizes = ssd_300(
     weights='imagenet',
@@ -58,17 +61,21 @@ dataset = parser.parse_tfrecords(filename=os.path.join(os.getcwd(),'DATA','train
 
 ssd_loss = SSDLoss(neg_pos_ratio=3, alpha=1.0)
 
-# sgd = SGD(lr=0.001, momentum=0.9, decay=0.0, nesterov=False)
-# model.compile(optimizer=sgd, loss=ssd_loss.compute_loss)
 model.compile(optimizer=Adam(lr=0.001, clipnorm=0.001), loss=ssd_loss.compute_loss)
 
 
+checkpoint_callabck = CheckpointCallback(
+    snapshot_interval=2, 
+    snapshot_path=checkpoint_path, 
+    checkpoint_prefix=checkpoint_prefix)
+
+metrics_callback = KerasCallback()
 
 history = model.fit(
     dataset,
     steps_per_epoch=steps_per_epoch,
     epochs=final_epoch,
-    callbacks=[KerasCallback()],
+    callbacks=[metrics_callback, checkpoint_callabck],
     # validation_data=val_generator,
     # validation_steps=ceil(val_dataset_size/batch_size),
     initial_epoch=initial_epoch)
