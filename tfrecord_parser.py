@@ -182,6 +182,6 @@ if __name__ == '__main__':
         # print(abxs_batch)
 
         for index in range(parser.batch_size):
-            im = draw_boxes_on_image_v2(image_batch[index]*255, abxs_batch[index])
-            cv2.imwrite(f"{index}.jpg", im)
+           im = draw_boxes_on_image_v2(image_batch[index]*255, abxs_batch[index])
+           cv2.imwrite(f"{index}.jpg", im)
         

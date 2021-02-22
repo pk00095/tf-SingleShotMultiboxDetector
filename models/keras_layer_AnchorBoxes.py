@@ -18,6 +18,7 @@ limitations under the License.
 
 from __future__ import division
 import numpy as np
+import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import InputSpec
 from tensorflow.keras.layers import Layer
@@ -169,7 +170,6 @@ class AnchorBoxes(Layer):
 
         # We need the shape of the input tensor
         # if K.image_dim_ordering() == 'tf':
-
         try:
             batch_size, feature_map_height, feature_map_width, feature_map_channels = x.get_shape()
         except Exception as e:

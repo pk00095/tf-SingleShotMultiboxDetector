@@ -9,14 +9,16 @@ from tfrecord_parser import Tfrpaser
 import os, pdb
 import numpy as np
 
-num_classes = 13
+config = SSD300Config(pos_iou_threshold=0.5, neg_iou_limit=0.3)
+
+num_classes = 21
+
 batch_size = 8
 
 initial_epoch   = 0
-final_epoch     = 5
-steps_per_epoch = 1000
+final_epoch     = 1
+steps_per_epoch = 1
 
-# checkpoint_path = './checkpoints/final_ssd.h5'
 checkpoint_path = './checkpoints/final_ssd'
 os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
 
@@ -56,8 +58,6 @@ ssd_loss = SSDLoss(neg_pos_ratio=3, alpha=1.0)
 # model.compile(optimizer=sgd, loss=ssd_loss.compute_loss)
 model.compile(optimizer=Adam(lr=0.001, clipnorm=0.001), loss=ssd_loss.compute_loss)
 
-
-
 history = model.fit(
     dataset,
     steps_per_epoch=steps_per_epoch,
@@ -67,4 +67,13 @@ history = model.fit(
     # validation_steps=ceil(val_dataset_size/batch_size),
     initial_epoch=initial_epoch)
 
-model.save(checkpoint_path)
+# model.save(checkpoint_path,save_format='tf')
+tf.keras.models.save_model(
+    model,
+    checkpoint_path,
+    overwrite=True,
+    include_optimizer=True,
+    save_format='tf',
+    signatures=None,
+    options=None,
+)
